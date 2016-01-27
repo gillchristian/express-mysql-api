@@ -53,8 +53,13 @@ app.get('/', function(req, res){
 });
 
 // API ROUTES --------------------------------------------------------------
-var apiRoutes = require('./app/routes/api')(app, express);
-app.use('/api', apiRoutes);
+// --- Users ---
+let usersRoutes = require('./app/routes/users')(app, express);
+app.use('/api/users', usersRoutes);
+
+// --- Productos
+let productsRoutes = require('./app/routes/products')(app, express);
+app.use('/api/products', productsRoutes);
 
 // MAIN CATCHALL ROUTE -----------------------------------------------------
 // SENDS USERS TO THE FRONT END 
@@ -67,4 +72,5 @@ app.get('*', function(req, res){
 // =========================================================================
 
 app.listen(port);
-console.log('Magic happens on port' + port);
+console.log('Magic happens on port ' + port);
+console.log('Visit localhost:' + port + '/api/users');

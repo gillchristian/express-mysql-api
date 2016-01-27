@@ -14,19 +14,21 @@ module.exports = function(app, express){
 	// get an instance of the Express Router ------------------------------
 	var router = express.Router();
 	
-	var table = 'users';
+	var table = 'usuarios';
 
 
 // User ===================================================================
 // ========================================================================
 
 // localhost:8080/users --- ROUTES ----------------------------------------
-	router.route('/users')
+	router.route('/')
 
 		// get all the users ----------------------------------------------
 		.get(function(req, res){
+            
+            let queryString = 'SELECT * from ??';
 			
-			dbConnection.query('SELECT * from `users`', (err, rows, fields)=>{
+			dbConnection.query( queryString, table,(err, rows, fields)=>{
 				if (err) throw err;
 				console.log(rows.length + ' -> users retrived');
 				res.json(rows);
@@ -40,8 +42,10 @@ module.exports = function(app, express){
 			let columns = ['name', 'last_name', 'email'];
 			
 			let user = [ req.body.name, req.body.last_name, req.body.email];
+            
+            let queryString = 'INSERT into ?? (??) VALUES (?)';
 			
-			dbConnection.query('INSERT into `users` (??) VALUES (?)', [columns, user],(err)=>{
+			dbConnection.query(queryString, [table, columns, user],(err)=>{
 				if (err){
 					res.send(err);
 				} 
@@ -54,7 +58,7 @@ module.exports = function(app, express){
 		});
 
 	// Localhost:8080/users/:user_id --- ROUTES ---------------------------
-	router.route('/users/:_id')
+	router.route('/:_id')
 		
 		// get an user by its id ------------------------------------------
 		.get(function(req, res){
@@ -62,8 +66,10 @@ module.exports = function(app, express){
 			let queriedUser = {
 				id: req.params._id
 			};
+            
+            let queryString = 'SELECT * from ?? WHERE ?';
 
-			dbConnection.query('SELECT * from `users` WHERE ?', queriedUser, (err, row, fields)=>{
+			dbConnection.query(queryString, [table, queriedUser], (err, row, fields)=>{
 				if (err) throw err;
 
 				console.log(row);
@@ -78,17 +84,16 @@ module.exports = function(app, express){
 				id: req.params._id
 			};
 
-			let userData = [ 
-				{name: req.body.name}, 
-				{last_name: req.body.last_name}, 
-				{email: req.body.email}
-			];
+			let userData = [ ];
+            if (req.body.name) userData.push({name: req.body.name});
+            if (req.body.last_name) userData.push({last_name: req.body.last_name}); 
+            if (req.body.email) userData.push({email: req.body.email});
 
 			let fields = userData.map( (value)=> mysql.escape(value) );
 			
-			let query = 'UPDATE `users` SET '+ fields.join(",") +' WHERE ?';
+			let queryString = 'UPDATE ?? SET '+ fields.join(",") +' WHERE ?';
 
-			dbConnection.query(query, queriedUser,(err)=>{
+			dbConnection.query(queryString, [table, queriedUser],(err)=>{
 				if (err){
 					res.send(err);
 					throw err;
@@ -107,9 +112,9 @@ module.exports = function(app, express){
 				id: req.params._id
 			};
 
-			let query = 'DELETE FROM `users` WHERE ?';
+			let queryString = 'DELETE FROM ?? WHERE ?';
 
-			dbConnection.query(query, queriedUser,(err)=>{
+			dbConnection.query(queryString, [table, queriedUser],(err)=>{
 				if (err){
 					res.send(err);
 					throw err;
