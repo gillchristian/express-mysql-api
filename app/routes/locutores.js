@@ -14,11 +14,31 @@ module.exports = function(app, express){
 	// get an instance of the Express Router ------------------------------
 	var router = express.Router();
 	
-	var table = 'usuarios';
+	var table = 'locutores';
 
 
 // User ===================================================================
 // ========================================================================
+
+
+	// --- ROUTES ---------------------------
+	router.route('/categorias')
+		// get all the categories ------------------------------------------
+		.get(function(req, res){
+            
+            let queryString = 'SELECT ?? from ??';
+            let field= 'categoria';
+
+			dbConnection.query(queryString, [field, table], (err, rows, fields)=>{
+                if (err) throw err;
+                
+                let categories = [];
+				rows.map( value => { if (categories.indexOf(value.categoria) === -1 ) categories.push(value.categoria); } );
+                
+                categories.sort();
+				res.json(categories);
+			});
+		});
 
 // --- ROUTES ----------------------------------------
 	router.route('/')
@@ -30,7 +50,7 @@ module.exports = function(app, express){
 			
 			dbConnection.query( queryString, table,(err, rows, fields)=>{
 				if (err) throw err;
-				console.log(rows.length + ' -> users retrived');
+				console.log(rows.length + ' -> locutores retrived');
 				res.json(rows);
 				
 			});
@@ -50,8 +70,8 @@ module.exports = function(app, express){
 					res.send(err);
 				} 
 				else {
-					res.send('User Created!!!');
-					console.log('User saved!');
+					res.send('Locutor Created!!!');
+					console.log('Locutor saved!');
 				}
 			});
 
@@ -64,7 +84,7 @@ module.exports = function(app, express){
 		.get(function(req, res){
 
 			let queriedUser = {
-				uid: req.params._id
+				locutor_id: req.params._id
 			};
             
             let queryString = 'SELECT * from ?? WHERE ?';
@@ -81,7 +101,7 @@ module.exports = function(app, express){
 		.put(function(req, res){
 			
 			let queriedUser = {
-				uid: req.params._id
+				locutor_id: req.params._id
 			};
 
 			let userData = [ ];
@@ -99,8 +119,8 @@ module.exports = function(app, express){
 					throw err;
 				} 
 				else {
-					res.send('User Update!!!');
-					console.log('User updated!');
+					res.send('Locutor Update!!!');
+					console.log('Locutor updated!');
 				}
 			});
 		})
@@ -109,7 +129,7 @@ module.exports = function(app, express){
 		.delete(function(req, res){
 
 			let queriedUser = {
-				uid: req.params._id
+				locutor_id: req.params._id
 			};
 
 			let queryString = 'DELETE FROM ?? WHERE ?';
@@ -120,13 +140,28 @@ module.exports = function(app, express){
 					throw err;
 				} 
 				else {
-					res.send('User Deleted!!!');
-					console.log('User deleted!');
+					res.send('Locutor Deleted!!!');
+					console.log('Locutor deleted!');
 				}
 			});
 		});
-	
-	//dbConnection.end();
+    
+	// --- ROUTES ---------------------------
+	router.route('/day/:_day')
+		// get an user by its id ------------------------------------------
+		.get(function(req, res){
+            
+            let dayColumn = 'horario_' + req.params._day + '_from';
+            
+            let queryString = 'SELECT * from ?? WHERE ?? IS NOT NULL';
+
+			dbConnection.query(queryString, [table, dayColumn], (err, rows, fields)=>{
+				if (err) throw err;
+
+				console.log(rows.length + ' -> locutores retrived');
+				res.json(rows);
+			});
+		});
 	
 	return router;
 };

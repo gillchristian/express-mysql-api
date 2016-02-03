@@ -7,9 +7,11 @@ var express 	= require('express');
 
 var app			= express(),
 	bodyParser 	= require('body-parser'),
-	morgan		= require('morgan');
+	morgan		= require('morgan'),
+    jwt         = require('jsonwebtoken');
 
 var config 		= require('./app/config'); // leave comented when going live to hereoku
+var secret      = config.secret;
 
 // App configuration =======================================================
 // =========================================================================
@@ -53,13 +55,26 @@ app.get('/', function(req, res){
 });
 
 // API ROUTES --------------------------------------------------------------
+// --- Authenticate ---
+let authenticateRoutes = require('./app/routes/authenticate')(app, express);
+app.use('/api/authenticate', authenticateRoutes);
+
+// --- token virification middalware used from here ---
+// --- following requests are required to provide a token ---
+let tokenVerify = require('./app/middleware/tokenVerify')(app);
+
 // --- Users ---
 let usersRoutes = require('./app/routes/users')(app, express);
 app.use('/api/users', usersRoutes);
-
-// --- Productos
+// --- Productos ---
 let productsRoutes = require('./app/routes/products')(app, express);
 app.use('/api/products', productsRoutes);
+// --- Locutores ---
+let locutoresRoutes = require('./app/routes/locutores')(app, express);
+app.use('/api/locutores', locutoresRoutes);
+// --- Terminaciones ---
+let terminacionesRoutes = require('./app/routes/terminaciones')(app, express);
+app.use('/api/terminaciones', terminacionesRoutes);
 
 // MAIN CATCHALL ROUTE -----------------------------------------------------
 // SENDS USERS TO THE FRONT END 
@@ -73,4 +88,6 @@ app.get('*', function(req, res){
 
 app.listen(port);
 console.log('Magic happens on port ' + port);
-console.log('Visit localhost:' + port + '/api/users');
+console.log('Visit localhost:' + port + '/api/users ------> get all users');
+console.log('Visit localhost:' + port + '/api/locutores --> get all locutores');
+console.log('Visit localhost:' + port + '/api/products ---> get all products');

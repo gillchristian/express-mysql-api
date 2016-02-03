@@ -20,7 +20,7 @@ module.exports = function(app, express){
 // User ===================================================================
 // ========================================================================
 
-// localhost:8080/users --- ROUTES ----------------------------------------
+// --- ROUTES ----------------------------------------
 	router.route('/')
 
 		// get all the users ----------------------------------------------
@@ -57,14 +57,14 @@ module.exports = function(app, express){
 
 		});
 
-	// Localhost:8080/users/:user_id --- ROUTES ---------------------------
+	// --- ROUTES ---------------------------
 	router.route('/:_id')
 		
 		// get an user by its id ------------------------------------------
 		.get(function(req, res){
 
 			let queriedUser = {
-				id: req.params._id
+				producto_id: req.params._id
 			};
             
             let queryString = 'SELECT * from ?? WHERE ?';
@@ -81,7 +81,7 @@ module.exports = function(app, express){
 		.put(function(req, res){
 			
 			let queriedUser = {
-				id: req.params._id
+				producto_id: req.params._id
 			};
 
 			let userData = [ ];
@@ -109,7 +109,7 @@ module.exports = function(app, express){
 		.delete(function(req, res){
 
 			let queriedUser = {
-				id: req.params._id
+				producto_id: req.params._id
 			};
 
 			let queryString = 'DELETE FROM ?? WHERE ?';
