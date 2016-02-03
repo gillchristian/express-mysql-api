@@ -8,7 +8,7 @@ let config = {
 		database: 'maxmedia'
 	},
 	port: process.env.PORT || 3000,
-    secret: 'insert--some--secret--here'
+    secret: 'NqtIfs/S52F6]||NM&s^dj6IP3$o`brn&Au15%d]vk(W2{<PSFo#bqYaZ`P]43fw'
 }
 
 module.exports = config;

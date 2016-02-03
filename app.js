@@ -61,7 +61,9 @@ app.use('/api/authenticate', authenticateRoutes);
 
 // --- token virification middalware used from here ---
 // --- following requests are required to provide a token ---
-let tokenVerify = require('./app/middleware/tokenVerify')(app);
+let tokenVerify = require('./app/middleware/tokenVerify');
+
+app.use( tokenVerify );
 
 // --- Users ---
 let usersRoutes = require('./app/routes/users')(app, express);

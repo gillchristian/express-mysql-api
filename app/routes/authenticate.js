@@ -30,7 +30,8 @@ module.exports = function(app, express){
             
             let queryColumns = ['usuario_password', 'usuario_username', 'usuario_nombres'];
             let usernameColumn = 'usuario_username';
-            let username = req.body.username;
+            let username = req.body.username || req.params.username || req.query.username;
+            let password = req.body.password || req.params.password || req.query.password;
             
             // --- usuario_emails usuario_username ---
             
@@ -48,7 +49,7 @@ module.exports = function(app, express){
                 // --- user found ---
 				else {
                     // --- password check ---
-                    let passwordCheck = user.usuario_password === req.body.password;
+                    let passwordCheck = user.usuario_password === password;
                     
                     // --- wrong password ---
                     if ( !passwordCheck ) res.json({success: false, message: 'Contraseña inválida.'}); 
@@ -65,7 +66,7 @@ module.exports = function(app, express){
                         res.json({
                             success: true,
                             message: 'Usuario autenticado.',
-                            toke: token
+                            token: token
                         });
                     }
                 } 
