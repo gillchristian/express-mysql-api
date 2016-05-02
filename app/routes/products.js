@@ -14,7 +14,7 @@ module.exports = function(app, express){
 	// get an instance of the Express Router ------------------------------
 	var router = express.Router();
 	
-	var table = 'productos';
+	var table = 'products';
 
 
 // User ===================================================================
